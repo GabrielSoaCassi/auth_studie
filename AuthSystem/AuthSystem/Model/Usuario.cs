@@ -9,12 +9,14 @@ namespace AuthSystem.Model
         public string Username { get; set; } = string.Empty;
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
+        public string Role { get; set; }    
 
         public Usuario(){}
         public Usuario(string username,string password)
         {
             Username = username;
             CreatePasswordHash(password);
+            Role = "user";
         }
         private void CreatePasswordHash(string password)
         {
