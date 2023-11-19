@@ -27,7 +27,7 @@ namespace AuthSystem.Controllers
         [HttpPost("logar")]
         public async Task<IActionResult> Logar(UsuarioDTO usuarioDTO)
         {
-            var response = await _usuarioService.LogarUsuario(usuarioDTO);
+            var response = await _usuarioService.LogarUsuario(usuarioDTO,HttpContext);
             if(response is null) return BadRequest("Erro ao tentar logar usuário, verifique usuario e/ou senha ");
             return Created(nameof(_usuarioService.LogarUsuario), response);
         }

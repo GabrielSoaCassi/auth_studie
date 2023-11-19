@@ -27,5 +27,14 @@ namespace AuthSystem.Repositories.UsuarioRepositoryFolder
             _appDbContext.SaveChanges();
             return usuario.Entity;
         }
+
+        public async Task UpdateUsuario(Usuario usuario)
+        {   
+            await Task.Run(() =>
+            {
+                _appDbContext.Set<Usuario>().Update(usuario);
+                _appDbContext.SaveChanges();
+            });
+        }
     }
 }

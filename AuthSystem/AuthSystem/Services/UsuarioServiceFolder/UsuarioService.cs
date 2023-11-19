@@ -21,12 +21,16 @@ namespace AuthSystem.Services.UsuarioServiceFolder
             _tokenService = tokenService;
         }
 
-        public async Task<string> LogarUsuario(UsuarioDTO usuario)
+        public async Task<string> LogarUsuario(UsuarioDTO usuario,HttpContext httpContext)
         {
             var usuarioExistenteNoBanco = await _usuarioRepository.FindUsuarioByUsername(usuario.Username);
             if (usuarioExistenteNoBanco is null || !VerifyPasswordHash(usuario.Password, usuarioExistenteNoBanco))
                 return null;
             var token = _tokenService.CreateToken(usuarioExistenteNoBanco);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            _tokenService.SetRefreshToken(refreshToken, ref usuarioExistenteNoBanco, httpContext);
+            await _usuarioRepository.UpdateUsuario(usuarioExistenteNoBanco);
+
             return token;
         }
 

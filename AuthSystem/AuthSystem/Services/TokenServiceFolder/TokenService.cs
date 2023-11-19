@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AuthSystem.Services.TokenServiceFolder
@@ -34,6 +35,30 @@ namespace AuthSystem.Services.TokenServiceFolder
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
 
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.Now.AddDays(7),
+                Created = DateTime.Now
+            };
+            return refreshToken;
+        }
+
+        public void SetRefreshToken(RefreshToken refreshToken, ref Usuario usuario,HttpContext httpContext)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = refreshToken.Expires,
+            };
+            httpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
+            usuario.TokenExpires = refreshToken.Expires;
+            usuario.TokenCreated = refreshToken.Created;
+            usuario.RefreshToken = refreshToken.Token;
         }
     }
 }
