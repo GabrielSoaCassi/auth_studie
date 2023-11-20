@@ -7,5 +7,6 @@ namespace AuthSystem.Services.UsuarioServiceFolder
     {
         public Task<Usuario> RegistrarUsuario(UsuarioDTO usuario);
         public Task<string> LogarUsuario(UsuarioDTO usuario,HttpContext httpContext);
+        public string RefreshToken(HttpContext httpContext);
     }
 }

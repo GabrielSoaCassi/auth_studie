@@ -29,11 +29,31 @@ namespace AuthSystem.Services.UsuarioServiceFolder
             var token = _tokenService.CreateToken(usuarioExistenteNoBanco);
             var refreshToken = _tokenService.GenerateRefreshToken();
             _tokenService.SetRefreshToken(refreshToken, ref usuarioExistenteNoBanco, httpContext);
-            await _usuarioRepository.UpdateUsuario(usuarioExistenteNoBanco);
+            await _usuarioRepository.UpdateUsuarioAsync(usuarioExistenteNoBanco);
 
             return token;
         }
 
+        public string RefreshToken(HttpContext httpContext)
+        {
+            var refreshTokenCookie = httpContext.Request.Cookies["refreshToken"].ToString();
+            var usuarioExistenteNoBanco = _usuarioRepository.GetUsuarioByRefreshToken(refreshTokenCookie);
+            
+            if (!refreshTokenCookie.Equals(usuarioExistenteNoBanco?.RefreshToken))
+            {
+                return null;
+            }
+            else if(usuarioExistenteNoBanco.TokenExpires < DateTime.Now) 
+            {
+                return null;
+            }
+            var token = _tokenService.CreateToken(usuarioExistenteNoBanco);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            _tokenService.SetRefreshToken(refreshToken, ref usuarioExistenteNoBanco, httpContext);
+            _usuarioRepository.UpdateUsuario(usuarioExistenteNoBanco);
+            return token;
+        }
+        
         public async Task<Usuario> RegistrarUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = _mapper.Map<Usuario>(usuarioDTO);

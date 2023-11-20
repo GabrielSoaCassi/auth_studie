@@ -31,5 +31,13 @@ namespace AuthSystem.Controllers
             if(response is null) return BadRequest("Erro ao tentar logar usuário, verifique usuario e/ou senha ");
             return Created(nameof(_usuarioService.LogarUsuario), response);
         }
+
+        [HttpPost("refresh_token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var response = _usuarioService.RefreshToken(HttpContext);
+            if (response is null) return Unauthorized("Usuario Não Autenticado");
+            return Ok(response);
+        }
     }
 }

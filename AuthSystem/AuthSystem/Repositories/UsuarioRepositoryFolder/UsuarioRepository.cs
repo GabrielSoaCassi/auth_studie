@@ -15,7 +15,7 @@ namespace AuthSystem.Repositories.UsuarioRepositoryFolder
 
         public async Task<Usuario> FindUsuarioByUsername(string username)
         {
-            var usuario = await _appDbContext.Set<Usuario>().FirstOrDefaultAsync(x => x.Username == username);
+            var usuario = await _appDbContext.Set<Usuario>().FirstOrDefaultAsync(x => x.Username.Equals(username));
             if (usuario is null)
                 return null;
             return usuario;
@@ -28,13 +28,26 @@ namespace AuthSystem.Repositories.UsuarioRepositoryFolder
             return usuario.Entity;
         }
 
-        public async Task UpdateUsuario(Usuario usuario)
-        {   
+        public async Task UpdateUsuarioAsync(Usuario usuario)
+        {
             await Task.Run(() =>
             {
                 _appDbContext.Set<Usuario>().Update(usuario);
                 _appDbContext.SaveChanges();
             });
+        }
+
+        public  Usuario GetUsuarioByRefreshToken(string refreshToken)
+        {   var usuario = _appDbContext.Set<Usuario>().SingleOrDefault(x => x.RefreshToken.Equals(refreshToken));
+            if (usuario is null)
+                return null;
+            return usuario;
+        }
+
+        public void UpdateUsuario(Usuario usuario)
+        {
+            var usuarioAtt = _appDbContext.Set<Usuario>().Update(usuario);
+            _appDbContext.SaveChanges();
         }
     }
 }

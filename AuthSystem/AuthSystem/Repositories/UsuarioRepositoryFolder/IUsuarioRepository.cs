@@ -6,6 +6,8 @@ namespace AuthSystem.Repositories.UsuarioRepositoryFolder
     {
         public Task<Usuario> AddUsuario(Usuario usuario);
         public Task<Usuario> FindUsuarioByUsername (string username);
-        public Task UpdateUsuario (Usuario username);
+        public Task UpdateUsuarioAsync (Usuario username);
+        public Usuario GetUsuarioByRefreshToken(string refreshToken);
+        public void UpdateUsuario(Usuario usuario);
     }
 }
