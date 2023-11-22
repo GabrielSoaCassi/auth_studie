@@ -1,2 +1,2 @@
 # auth_studie
-API developed for studie auth and security
+API developed for study auth and security
